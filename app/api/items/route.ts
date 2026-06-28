@@ -27,6 +27,7 @@ export async function POST(request: Request) {
       user_id: user.id,
       sku: body.sku,
       name: body.name,
+      category: body.category || null,
       on_hand: Number(body.on_hand) || 0,
       reorder_point: Number(body.reorder_point) || 0,
       cost: Number(body.cost) || 0,

@@ -5,6 +5,7 @@ import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { useLang } from "@/components/i18n/language-provider";
+import { CATEGORIES } from "@/lib/categories";
 
 interface Props {
   onClose: () => void;
@@ -30,6 +31,7 @@ export function AddItemModal({ onClose, onAdded }: Props) {
       body: JSON.stringify({
         name: get("name"),
         sku: get("sku"),
+        category: get("category") || null,
         on_hand: get("on_hand"),
         reorder_point: get("reorder_point"),
         cost: get("cost"),
@@ -73,24 +75,45 @@ export function AddItemModal({ onClose, onAdded }: Props) {
                 required
               />
             </div>
+
             <div className="space-y-1.5">
               <Label htmlFor="sku">SKU *</Label>
               <Input id="sku" name="sku" placeholder="SKU-0001" required />
             </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="category">{lang === "tr" ? "Kategori" : "Category"}</Label>
+              <select
+                id="category"
+                name="category"
+                className="h-9 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="">{lang === "tr" ? "— Seç —" : "— Select —"}</option>
+                {CATEGORIES.map((c) => (
+                  <option key={c.key} value={c.key}>
+                    {c.label[lang]}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="space-y-1.5">
               <Label htmlFor="on_hand">{lang === "tr" ? "Eldeki miktar" : "On hand"}</Label>
               <Input id="on_hand" name="on_hand" type="number" min="0" defaultValue="0" />
             </div>
+
             <div className="space-y-1.5">
               <Label htmlFor="reorder_point">
                 {lang === "tr" ? "Sipariş noktası" : "Reorder point"}
               </Label>
               <Input id="reorder_point" name="reorder_point" type="number" min="0" defaultValue="5" />
             </div>
+
             <div className="space-y-1.5">
               <Label htmlFor="cost">{lang === "tr" ? "Maliyet ($)" : "Cost ($)"}</Label>
               <Input id="cost" name="cost" type="number" min="0" step="0.01" defaultValue="0" />
             </div>
+
             <div className="space-y-1.5">
               <Label htmlFor="price">{lang === "tr" ? "Satış fiyatı ($)" : "Sale price ($)"}</Label>
               <Input id="price" name="price" type="number" min="0" step="0.01" defaultValue="0" />
