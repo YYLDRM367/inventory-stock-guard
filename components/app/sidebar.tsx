@@ -1,17 +1,34 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Sparkles, Settings, LifeBuoy, LogOut } from "lucide-react";
 import appConfig from "@/app.config";
 import { Logo } from "@/components/ui/logo";
 import { Icon } from "@/components/ui/icon";
 import { useLang } from "@/components/i18n/language-provider";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { t, lang } = useLang();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));
+  }, []);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
+
+  const initials = userEmail ? userEmail.slice(0, 2).toUpperCase() : "??";
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
@@ -107,19 +124,18 @@ export function Sidebar() {
       <div className="border-t border-sidebar-border p-3">
         <div className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-2.5 py-2 shadow-pill">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-xs font-bold text-white" style={{ backgroundImage: "var(--grad-brand)" }}>
-            DK
+            {initials}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[13px] font-semibold">Dana Kim</p>
-            <p className="truncate text-[11.5px] text-muted-foreground">dana@crate.app</p>
+            <p className="truncate text-[11.5px] text-muted-foreground">{userEmail ?? "—"}</p>
           </div>
-          <Link
-            href="/login"
+          <button
+            onClick={handleLogout}
             aria-label={lang === "tr" ? "Çıkış" : "Log out"}
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
-          </Link>
+          </button>
         </div>
       </div>
     </aside>

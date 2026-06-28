@@ -10,21 +10,54 @@ import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { LanguageToggle } from "@/components/ui/language-toggle";
+import { createClient } from "@/lib/supabase/client";
 
-/**
- * Login / signup with a DEMO BYPASS. Supabase isn't connected in this kit, so
- * submitting (or "Continue with demo") just drops you into the live demo
- * dashboard. Wire Supabase via /setup to make these forms do real auth.
- */
 export function AuthScreen({ mode }: { mode: "login" | "signup" }) {
   const { ui, t, lang } = useLang();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
-  function enter(e?: React.FormEvent) {
+  async function enter(e?: React.FormEvent<HTMLFormElement>) {
     e?.preventDefault();
+    setError(null);
+    setNotice(null);
     setLoading(true);
-    setTimeout(() => router.push("/dashboard"), 450);
+
+    const form = e?.currentTarget;
+    const email = (form?.elements.namedItem("email") as HTMLInputElement)?.value ?? "";
+    const password = (form?.elements.namedItem("password") as HTMLInputElement)?.value ?? "";
+
+    const supabase = createClient();
+
+    if (isLogin) {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setError(lang === "tr" ? "E-posta veya şifre hatalı." : "Invalid email or password.");
+        setLoading(false);
+        return;
+      }
+    } else {
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+      if (data.user && !data.session) {
+        setNotice(
+          lang === "tr"
+            ? "Hesabını doğrulamak için e-postanı kontrol et."
+            : "Check your email to confirm your account.",
+        );
+        setLoading(false);
+        return;
+      }
+    }
+
+    router.refresh();
+    router.push("/dashboard");
   }
 
   const isLogin = mode === "login";
@@ -88,12 +121,12 @@ export function AuthScreen({ mode }: { mode: "login" | "signup" }) {
             </h2>
           </div>
 
-          {/* Social (decorative in demo) */}
+          {/* Social (decorative) */}
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" onClick={enter} className="gap-2">
+            <Button variant="outline" type="button" className="gap-2" disabled>
               <GoogleGlyph /> Google
             </Button>
-            <Button variant="outline" onClick={enter} className="gap-2">
+            <Button variant="outline" type="button" className="gap-2" disabled>
               <GithubGlyph /> GitHub
             </Button>
           </div>
@@ -113,29 +146,30 @@ export function AuthScreen({ mode }: { mode: "login" | "signup" }) {
             )}
             <div className="space-y-1.5">
               <Label htmlFor="email">{ui.email}</Label>
-              <Input id="email" name="email" type="email" placeholder="you@company.com" defaultValue="demo@demo.app" />
+              <Input id="email" name="email" type="email" placeholder="you@company.com" required />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="password">{ui.password}</Label>
-              <Input id="password" name="password" type="password" placeholder="••••••••" defaultValue="demodemo" />
+              <Input id="password" name="password" type="password" placeholder="••••••••" required minLength={6} />
             </div>
+
+            {error && (
+              <p className="rounded-lg bg-destructive/10 px-3 py-2 text-center text-sm text-destructive">
+                {error}
+              </p>
+            )}
+            {notice && (
+              <p className="rounded-lg bg-success/10 px-3 py-2 text-center text-sm text-success-foreground">
+                {notice}
+              </p>
+            )}
+
             <Button type="submit" disabled={loading} className="w-full gap-2">
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               {isLogin ? ui.signIn : ui.getStarted}
               {!loading && <ArrowRight className="h-4 w-4" />}
             </Button>
           </form>
-
-          <button
-            onClick={enter}
-            className="w-full rounded-lg border border-dashed border-border py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary cursor-pointer"
-          >
-            {ui.continueDemo} →
-          </button>
-
-          <p className="rounded-lg bg-muted px-3 py-2 text-center text-xs text-muted-foreground">
-            {ui.demoNote}
-          </p>
 
           <p className="text-center text-sm text-muted-foreground">
             {isLogin ? ui.noAccount : ui.haveAccount}{" "}
