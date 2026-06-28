@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Process \"setup-guide/0-overview.png\")",
+      "PowerShell(Start-Process \"setup-guide/1-build-with-claude.png\")",
+      "PowerShell(Start-Process \"c:\\\\UYGULAMA\\\\InventoryStockGuard\\\\color-preview.html\")",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\nodejs;$env:APPDATA\\\\npm\"; cd \"c:\\\\UYGULAMA\\\\InventoryStockGuard\"; node --version; npm --version)"
+    ]
+  }
+}

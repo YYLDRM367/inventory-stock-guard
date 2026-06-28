@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renk Seçimi — Inventory Stock Guard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #f1f5f9; padding: 40px 20px; }
+  h1 { text-align: center; color: #1e293b; font-size: 22px; margin-bottom: 8px; }
+  p.sub { text-align: center; color: #64748b; font-size: 14px; margin-bottom: 40px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; max-width: 1000px; margin: 0 auto; }
+
+  .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+
+  .card-header { padding: 18px 20px; color: white; }
+  .card-header .badge { font-size: 11px; font-weight: 700; letter-spacing: 1px; opacity: 0.85; margin-bottom: 6px; text-transform: uppercase; }
+  .card-header h2 { font-size: 20px; font-weight: 700; }
+  .card-header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+  .card-body { padding: 20px; }
+
+  .stat-row { display: flex; gap: 10px; margin-bottom: 16px; }
+  .stat { flex: 1; border-radius: 10px; padding: 12px; text-align: center; }
+  .stat .val { font-size: 20px; font-weight: 700; }
+  .stat .lbl { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  .item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+  .item:last-child { border-bottom: none; }
+  .item-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .item-info { flex: 1; }
+  .item-info .name { font-size: 13px; font-weight: 600; color: #1e293b; }
+  .item-info .sku { font-size: 11px; color: #94a3b8; font-family: monospace; }
+  .bar-wrap { width: 80px; }
+  .bar-bg { background: #f1f5f9; border-radius: 4px; height: 6px; overflow: hidden; }
+  .bar-fill { height: 6px; border-radius: 4px; }
+
+  .btn { display: inline-block; padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; color: white; border: none; cursor: pointer; margin-top: 16px; width: 100%; text-align: center; }
+
+  .option-label { text-align: center; font-size: 13px; color: #64748b; padding: 12px; background: #f8fafc; border-top: 1px solid #f1f5f9; }
+  .option-label strong { color: #1e293b; }
+
+  /* OPTION 1 — Blue */
+  .blue .card-header { background: linear-gradient(135deg, #2563EB, #1d4ed8); }
+  .blue .stat { background: #eff6ff; }
+  .blue .stat .val { color: #2563EB; }
+  .blue .item-icon { background: #eff6ff; }
+  .blue .bar-fill { background: #2563EB; }
+  .blue .btn { background: #2563EB; }
+
+  /* OPTION 2 — Teal */
+  .teal .card-header { background: linear-gradient(135deg, #0d9488, #0f766e); }
+  .teal .stat { background: #f0fdfa; }
+  .teal .stat .val { color: #0d9488; }
+  .teal .item-icon { background: #f0fdfa; }
+  .teal .bar-fill { background: #0d9488; }
+  .teal .btn { background: #0d9488; }
+
+  /* OPTION 3 — Purple */
+  .purple .card-header { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+  .purple .stat { background: #f5f3ff; }
+  .purple .stat .val { color: #7c3aed; }
+  .purple .item-icon { background: #f5f3ff; }
+  .purple .bar-fill { background: #7c3aed; }
+  .purple .btn { background: #7c3aed; }
+</style>
+</head>
+<body>
+
+<h1>Renk Teması Seç</h1>
+<p class="sub">Inventory Stock Guard için 3 seçenek — hangisi sana yakın?</p>
+
+<div class="grid">
+
+  <!-- OPTION 1: Blue -->
+  <div class="card blue">
+    <div class="card-header">
+      <div class="badge">Seçenek 1</div>
+      <h2>Inventory Stock Guard</h2>
+      <p>Guard your stock. Never run out.</p>
+    </div>
+    <div class="card-body">
+      <div class="stat-row">
+        <div class="stat"><div class="val">248</div><div class="lbl">Kalem</div></div>
+        <div class="stat"><div class="val">12</div><div class="lbl">Düşük stok</div></div>
+        <div class="stat"><div class="val">$94k</div><div class="lbl">Değer</div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">📦</div>
+        <div class="item-info"><div class="name">Laptop Stand</div><div class="sku">SKU-0041</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:75%"></div></div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">🖱️</div>
+        <div class="item-info"><div class="name">Wireless Mouse</div><div class="sku">SKU-0088</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:30%"></div></div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">⌨️</div>
+        <div class="item-info"><div class="name">Mech Keyboard</div><div class="sku">SKU-0112</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:55%"></div></div></div>
+      </div>
+      <button class="btn">Panoya Git</button>
+    </div>
+    <div class="option-label"><strong>Mavi</strong> — Güvenilir, kurumsal, profesyonel · <code>#2563EB</code></div>
+  </div>
+
+  <!-- OPTION 2: Teal -->
+  <div class="card teal">
+    <div class="card-header">
+      <div class="badge">Seçenek 2</div>
+      <h2>Inventory Stock Guard</h2>
+      <p>Guard your stock. Never run out.</p>
+    </div>
+    <div class="card-body">
+      <div class="stat-row">
+        <div class="stat"><div class="val">248</div><div class="lbl">Kalem</div></div>
+        <div class="stat"><div class="val">12</div><div class="lbl">Düşük stok</div></div>
+        <div class="stat"><div class="val">$94k</div><div class="lbl">Değer</div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">📦</div>
+        <div class="item-info"><div class="name">Laptop Stand</div><div class="sku">SKU-0041</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:75%"></div></div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">🖱️</div>
+        <div class="item-info"><div class="name">Wireless Mouse</div><div class="sku">SKU-0088</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:30%"></div></div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">⌨️</div>
+        <div class="item-info"><div class="name">Mech Keyboard</div><div class="sku">SKU-0112</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:55%"></div></div></div>
+      </div>
+      <button class="btn">Panoya Git</button>
+    </div>
+    <div class="option-label"><strong>Teal (Zümrüt)</strong> — Modern, taze, sağlıklı · <code>#0D9488</code></div>
+  </div>
+
+  <!-- OPTION 3: Purple -->
+  <div class="card purple">
+    <div class="card-header">
+      <div class="badge">Seçenek 3</div>
+      <h2>Inventory Stock Guard</h2>
+      <p>Guard your stock. Never run out.</p>
+    </div>
+    <div class="card-body">
+      <div class="stat-row">
+        <div class="stat"><div class="val">248</div><div class="lbl">Kalem</div></div>
+        <div class="stat"><div class="val">12</div><div class="lbl">Düşük stok</div></div>
+        <div class="stat"><div class="val">$94k</div><div class="lbl">Değer</div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">📦</div>
+        <div class="item-info"><div class="name">Laptop Stand</div><div class="sku">SKU-0041</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:75%"></div></div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">🖱️</div>
+        <div class="item-info"><div class="name">Wireless Mouse</div><div class="sku">SKU-0088</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:30%"></div></div></div>
+      </div>
+      <div class="item">
+        <div class="item-icon">⌨️</div>
+        <div class="item-info"><div class="name">Mech Keyboard</div><div class="sku">SKU-0112</div></div>
+        <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:55%"></div></div></div>
+      </div>
+      <button class="btn">Panoya Git</button>
+    </div>
+    <div class="option-label"><strong>Mor</strong> — Premium, yaratıcı, özgün · <code>#7C3AED</code></div>
+  </div>
+
+</div>
+
+</body>
+</html>
