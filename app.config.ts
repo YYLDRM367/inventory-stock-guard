@@ -196,6 +196,8 @@ export const appConfig: AppConfig = {
     { label: { tr: "Kalemler", en: "Items" }, href: "/items", icon: "boxes" },
     { label: { tr: "Satın alma", en: "Purchase orders" }, href: "/purchase-orders", icon: "clipboard-list" },
     { label: { tr: "Konumlar", en: "Locations" }, href: "/locations", icon: "warehouse", muted: true },
+    { label: { tr: "Müşteriler", en: "Customers" }, href: "/customers", icon: "users" },
+    { label: { tr: "Satış siparişleri", en: "Sales orders" }, href: "/sales-orders", icon: "shopping-cart" },
     { label: { tr: "Raporlar", en: "Reports" }, href: "/reports", icon: "bar-chart-3" },
     { label: { tr: "Tedarikçiler", en: "Suppliers" }, href: "/suppliers", icon: "truck" },
     { label: { tr: "Ayarlar", en: "Settings" }, href: "/settings", icon: "settings" },
@@ -214,6 +216,13 @@ export const appConfig: AppConfig = {
         { label: { tr: "Kalemler", en: "Items" }, href: "/items", icon: "boxes" },
         { label: { tr: "Satın alma", en: "Purchase orders" }, href: "/purchase-orders", icon: "clipboard-list", badge: { tr: "3", en: "3" } },
         { label: { tr: "Konumlar", en: "Locations" }, href: "/locations", icon: "warehouse", muted: true },
+      ],
+    },
+    {
+      label: { tr: "Satış", en: "Sales" },
+      items: [
+        { label: { tr: "Müşteriler", en: "Customers" }, href: "/customers", icon: "users" },
+        { label: { tr: "Satış siparişleri", en: "Sales orders" }, href: "/sales-orders", icon: "shopping-cart" },
       ],
     },
     {
