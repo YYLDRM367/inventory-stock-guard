@@ -11,6 +11,7 @@ import {
   Loader2,
   Package,
   ChevronRight,
+  Printer,
 } from "lucide-react";
 import { AddSupplierModal } from "@/components/app/add-supplier-modal";
 import { NewPOModal } from "@/components/app/new-po-modal";
@@ -106,6 +107,79 @@ export default function PurchaseOrdersPage() {
     const r = await fetch(`/api/purchase-orders/${po.id}`);
     if (r.ok) setPOItems(await r.json());
     setPOItemsLoading(false);
+  }
+
+  function printPO() {
+    if (!selectedPO) return;
+    const rows = poItems.map((pi) => `
+      <tr>
+        <td>${pi.items?.name ?? "—"}</td>
+        <td class="mono">${pi.items?.sku ?? "—"}</td>
+        <td class="right">${pi.qty_ordered}</td>
+        <td class="right">${pi.qty_received}</td>
+        <td class="right">${formatUsd(pi.unit_cost)}</td>
+        <td class="right">${formatUsd(pi.qty_ordered * pi.unit_cost)}</td>
+      </tr>`).join("");
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<title>${lang === "tr" ? "Satın Alma Siparişi" : "Purchase Order"} – ${selectedPO.number}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:40px}
+  .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+  .header h1{font-size:22px;font-weight:700}
+  .header .sub{font-size:11px;color:#666;margin-top:2px}
+  .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 24px;margin-bottom:24px;padding:16px;background:#f8f8f8;border-radius:8px}
+  .meta-item label{font-size:10px;color:#888;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+  .meta-item span{font-size:13px;font-weight:600}
+  .badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;background:#e5e7eb;color:#374151}
+  table{width:100%;border-collapse:collapse}
+  th{background:#f3f4f6;text-align:left;padding:8px 10px;font-size:11px;color:#6b7280;border-bottom:2px solid #e5e7eb}
+  td{padding:8px 10px;border-bottom:1px solid #f3f4f6;font-size:12px;vertical-align:middle}
+  .right{text-align:right}
+  .mono{font-family:monospace;font-size:11px;color:#6b7280}
+  tfoot td{font-weight:700;font-size:13px;border-top:2px solid #d1d5db;border-bottom:none;padding-top:12px}
+  @media print{body{padding:20px}}
+</style></head><body>
+<div class="header">
+  <div>
+    <h1>${lang === "tr" ? "Satın Alma Siparişi" : "Purchase Order"}</h1>
+    <div class="sub">Inventory Stock Guard</div>
+  </div>
+  <div style="text-align:right">
+    <div style="font-size:20px;font-weight:700;font-family:monospace">${selectedPO.number}</div>
+    <div class="sub">${formatDate(selectedPO.created_at)}</div>
+  </div>
+</div>
+<div class="meta">
+  <div class="meta-item"><label>${lang === "tr" ? "Tedarikçi" : "Supplier"}</label><span>${selectedPO.supplier_name}</span></div>
+  <div class="meta-item"><label>${lang === "tr" ? "Durum" : "Status"}</label><span class="badge">${PO_LABEL[selectedPO.status][lang]}</span></div>
+  <div class="meta-item"><label>${lang === "tr" ? "Tahmini teslim" : "Expected"}</label><span>${selectedPO.expected_at ? formatDate(selectedPO.expected_at) : "—"}</span></div>
+  <div class="meta-item"><label>${lang === "tr" ? "Toplam tutar" : "Total value"}</label><span>${formatUsd(selectedPO.total)}</span></div>
+</div>
+<table>
+  <thead><tr>
+    <th>${lang === "tr" ? "Ürün" : "Item"}</th>
+    <th>SKU</th>
+    <th class="right">${lang === "tr" ? "Sipariş" : "Ordered"}</th>
+    <th class="right">${lang === "tr" ? "Teslim" : "Received"}</th>
+    <th class="right">${lang === "tr" ? "Birim fiyat" : "Unit cost"}</th>
+    <th class="right">${lang === "tr" ? "Toplam" : "Total"}</th>
+  </tr></thead>
+  <tbody>${rows}</tbody>
+  <tfoot><tr>
+    <td colspan="5" class="right">${lang === "tr" ? "Genel Toplam" : "Grand Total"}</td>
+    <td class="right">${formatUsd(selectedPO.total)}</td>
+  </tr></tfoot>
+</table>
+</body></html>`;
+
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    w.print();
   }
 
   async function advanceStatus() {
@@ -291,6 +365,13 @@ export default function PurchaseOrdersPage() {
                   <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", PO_LABEL[selectedPO.status].tone)}>
                     {PO_LABEL[selectedPO.status][lang]}
                   </span>
+                  <button
+                    onClick={printPO}
+                    title={lang === "tr" ? "Yazdır" : "Print"}
+                    className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
+                  >
+                    <Printer className="h-4 w-4" />
+                  </button>
                   <button
                     onClick={() => setSelectedPO(null)}
                     className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted"

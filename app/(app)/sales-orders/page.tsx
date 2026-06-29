@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Plus, ShoppingCart, Clock, CheckCircle2, PackageCheck,
-  X, Loader2, Package, ChevronRight, XCircle,
+  X, Loader2, Package, ChevronRight, XCircle, Printer,
 } from "lucide-react";
 import { NewSalesOrderModal } from "@/components/app/new-sales-order-modal";
 import { useLang } from "@/components/i18n/language-provider";
@@ -84,6 +84,79 @@ export default function SalesOrdersPage() {
       const refreshed = updated.find((o) => o.id === selectedSO.id);
       if (refreshed) setSelectedSO(refreshed);
     }
+  }
+
+  function printSO() {
+    if (!selectedSO) return;
+    const rows = soItems.map((si) => `
+      <tr>
+        <td>${si.items?.name ?? "—"}</td>
+        <td class="mono">${si.items?.sku ?? "—"}</td>
+        <td class="right">${si.qty}</td>
+        <td class="right">${formatUsd(si.unit_price)}</td>
+        <td class="right">${formatUsd(si.qty * si.unit_price)}</td>
+      </tr>`).join("");
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<title>${lang === "tr" ? "Satış Siparişi" : "Sales Order"} – ${selectedSO.number}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:40px}
+  .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+  .header h1{font-size:22px;font-weight:700}
+  .header .sub{font-size:11px;color:#666;margin-top:2px}
+  .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 24px;margin-bottom:24px;padding:16px;background:#f8f8f8;border-radius:8px}
+  .meta-item label{font-size:10px;color:#888;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+  .meta-item span{font-size:13px;font-weight:600}
+  .badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;background:#e5e7eb;color:#374151}
+  .notes{margin-bottom:20px;padding:12px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;font-size:12px;color:#78350f}
+  table{width:100%;border-collapse:collapse}
+  th{background:#f3f4f6;text-align:left;padding:8px 10px;font-size:11px;color:#6b7280;border-bottom:2px solid #e5e7eb}
+  td{padding:8px 10px;border-bottom:1px solid #f3f4f6;font-size:12px;vertical-align:middle}
+  .right{text-align:right}
+  .mono{font-family:monospace;font-size:11px;color:#6b7280}
+  tfoot td{font-weight:700;font-size:13px;border-top:2px solid #d1d5db;border-bottom:none;padding-top:12px}
+  @media print{body{padding:20px}}
+</style></head><body>
+<div class="header">
+  <div>
+    <h1>${lang === "tr" ? "Satış Siparişi" : "Sales Order"}</h1>
+    <div class="sub">Inventory Stock Guard</div>
+  </div>
+  <div style="text-align:right">
+    <div style="font-size:20px;font-weight:700;font-family:monospace">${selectedSO.number}</div>
+    <div class="sub">${formatDate(selectedSO.created_at)}</div>
+  </div>
+</div>
+<div class="meta">
+  <div class="meta-item"><label>${lang === "tr" ? "Müşteri" : "Customer"}</label><span>${selectedSO.customer_name}</span></div>
+  <div class="meta-item"><label>${lang === "tr" ? "Durum" : "Status"}</label><span class="badge">${SO_LABEL[selectedSO.status][lang]}</span></div>
+  <div class="meta-item"><label>${lang === "tr" ? "Tarih" : "Date"}</label><span>${formatDate(selectedSO.created_at)}</span></div>
+  <div class="meta-item"><label>${lang === "tr" ? "Toplam tutar" : "Order total"}</label><span>${formatUsd(selectedSO.total)}</span></div>
+</div>
+${selectedSO.notes ? `<div class="notes"><strong>${lang === "tr" ? "Notlar" : "Notes"}:</strong> ${selectedSO.notes}</div>` : ""}
+<table>
+  <thead><tr>
+    <th>${lang === "tr" ? "Ürün" : "Item"}</th>
+    <th>SKU</th>
+    <th class="right">${lang === "tr" ? "Adet" : "Qty"}</th>
+    <th class="right">${lang === "tr" ? "Birim fiyat" : "Unit price"}</th>
+    <th class="right">${lang === "tr" ? "Toplam" : "Total"}</th>
+  </tr></thead>
+  <tbody>${rows}</tbody>
+  <tfoot><tr>
+    <td colspan="4" class="right">${lang === "tr" ? "Genel Toplam" : "Grand Total"}</td>
+    <td class="right">${formatUsd(selectedSO.total)}</td>
+  </tr></tfoot>
+</table>
+</body></html>`;
+
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    w.print();
   }
 
   async function cancelOrder() {
@@ -226,6 +299,13 @@ export default function SalesOrdersPage() {
                   <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold", SO_LABEL[selectedSO.status].tone)}>
                     {SO_LABEL[selectedSO.status][lang]}
                   </span>
+                  <button
+                    onClick={printSO}
+                    title={lang === "tr" ? "Yazdır" : "Print"}
+                    className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
+                  >
+                    <Printer className="h-4 w-4" />
+                  </button>
                   <button onClick={() => setSelectedSO(null)} className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-muted">
                     <X className="h-4 w-4" />
                   </button>
