@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ColorThemeProvider } from "@/components/app/color-theme-provider";
 import { LanguageProvider } from "@/components/i18n/language-provider";
 import appConfig from "@/app.config";
 import { DEFAULT_LANG } from "@/lib/i18n/config";
@@ -48,9 +49,19 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${sans.variable} ${display.variable} ${mono.variable} h-full`}
     >
+      <head>
+        {/* Apply saved color theme before first paint to avoid flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var k=localStorage.getItem('isg-color-theme');var m={amber:'oklch(70% 0.15 65)',emerald:'oklch(58% 0.17 152)'};if(k&&m[k]){var r=document.documentElement;r.style.setProperty('--color-primary',m[k]);r.style.setProperty('--color-accent',m[k]);r.style.setProperty('--color-ring',m[k]);r.style.setProperty('--color-sidebar-active',m[k]);}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full bg-background text-foreground antialiased font-sans">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <LanguageProvider>{children}</LanguageProvider>
+          <ColorThemeProvider>
+            <LanguageProvider>{children}</LanguageProvider>
+          </ColorThemeProvider>
         </ThemeProvider>
       </body>
     </html>
