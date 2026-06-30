@@ -1,26 +1,40 @@
 {
+  "id": "/dashboard",
   "name": "Inventory Stock Guard",
   "short_name": "StockGuard",
   "description": "Simple inventory & warehouse management for SMBs. Track stock, locations, low-stock alerts and reorders.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#3B6FD4",
   "lang": "en",
   "dir": "ltr",
+  "prefer_related_applications": false,
   "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
-      "src": "/icon",
+      "src": "/api/icons/192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/api/icons/192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/api/icons/512",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon",
+      "src": "/api/icons/512",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -35,27 +49,24 @@
   "shortcuts": [
     {
       "name": "Dashboard",
+      "short_name": "Home",
       "url": "/dashboard",
-      "description": "View inventory overview"
+      "description": "View inventory overview",
+      "icons": [{ "src": "/api/icons/96", "sizes": "96x96", "type": "image/png" }]
     },
     {
       "name": "Items",
+      "short_name": "Items",
       "url": "/items",
-      "description": "Manage stock items"
+      "description": "Manage stock items",
+      "icons": [{ "src": "/api/icons/96", "sizes": "96x96", "type": "image/png" }]
     },
     {
       "name": "Sales Orders",
+      "short_name": "Sales",
       "url": "/sales-orders",
-      "description": "View sales orders"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/icon.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "form_factor": "narrow",
-      "label": "Inventory Stock Guard Dashboard"
+      "description": "View and create sales orders",
+      "icons": [{ "src": "/api/icons/96", "sizes": "96x96", "type": "image/png" }]
     }
   ]
 }

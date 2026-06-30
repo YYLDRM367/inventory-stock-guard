@@ -9,6 +9,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ColorThemeProvider } from "@/components/app/color-theme-provider";
 import { LanguageProvider } from "@/components/i18n/language-provider";
+import { SWRegister } from "@/components/app/sw-register";
 import appConfig from "@/app.config";
 import { DEFAULT_LANG } from "@/lib/i18n/config";
 
@@ -70,6 +71,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full bg-background text-foreground antialiased font-sans">
+        <SWRegister />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <ColorThemeProvider>
             <LanguageProvider>{children}</LanguageProvider>
