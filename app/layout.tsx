@@ -38,6 +38,16 @@ export const metadata: Metadata = {
   title: `${appConfig.name} — ${appConfig.tagline[DEFAULT_LANG]}`,
   description: appConfig.description[DEFAULT_LANG],
   applicationName: appConfig.name,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: appConfig.name,
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -50,6 +60,8 @@ export default function RootLayout({
       className={`${sans.variable} ${display.variable} ${mono.variable} h-full`}
     >
       <head>
+        <meta name="theme-color" content="#3B6FD4" />
+        <meta name="mobile-web-app-capable" content="yes" />
         {/* Apply saved color theme before first paint to avoid flash */}
         <script
           dangerouslySetInnerHTML={{

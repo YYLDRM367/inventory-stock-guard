@@ -5,6 +5,7 @@ import { Bell, ScanLine } from "lucide-react";
 import appConfig from "@/app.config";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { useLang } from "@/components/i18n/language-provider";
+import { MobileNavToggle } from "@/components/app/mobile-nav";
 
 export function Topbar() {
   const pathname = usePathname();
@@ -14,7 +15,8 @@ export function Topbar() {
     appConfig.navGroups.flatMap((g) => g.items).find((n) => pathname === n.href || pathname.startsWith(n.href + "/"));
 
   return (
-    <header className="sticky top-0 z-20 flex h-14 items-center gap-4 border-b border-border bg-background/80 px-5 backdrop-blur lg:px-8">
+    <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur lg:px-8">
+      <MobileNavToggle />
       <span className="font-display text-[15px] font-semibold tracking-tight md:hidden">
         {current ? t(current.label) : appConfig.name}
       </span>
