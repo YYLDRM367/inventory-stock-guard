@@ -53,7 +53,7 @@ export async function GET() {
           </div>
 
           {/* Table */}
-          <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #E5E7EB", overflow: "hidden", flex: 1 }}>
+          <div style={{ display: "flex", flexDirection: "column", background: "#fff", borderRadius: 12, border: "1px solid #E5E7EB", overflow: "hidden", flex: 1 }}>
             <div style={{ display: "flex", background: "#F8FAFC", padding: "10px 16px", borderBottom: "1px solid #E5E7EB" }}>
               {["SKU", "Item Name", "Category", "On Hand", "Reorder", "Status"].map((h, i) => (
                 <div key={i} style={{ flex: i === 1 ? 2 : 1, fontSize: 10, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>{h}</div>
