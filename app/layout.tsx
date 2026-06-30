@@ -9,7 +9,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ColorThemeProvider } from "@/components/app/color-theme-provider";
 import { LanguageProvider } from "@/components/i18n/language-provider";
-import { SWRegister } from "@/components/app/sw-register";
 import appConfig from "@/app.config";
 import { DEFAULT_LANG } from "@/lib/i18n/config";
 
@@ -63,15 +62,14 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#3B6FD4" />
         <meta name="mobile-web-app-capable" content="yes" />
-        {/* Apply saved color theme before first paint to avoid flash */}
+        {/* Color theme + Service Worker registration — both run before React hydrates */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var k=localStorage.getItem('isg-color-theme');var m={amber:'oklch(70% 0.15 65)',emerald:'oklch(58% 0.17 152)'};if(k&&m[k]){var r=document.documentElement;r.style.setProperty('--color-primary',m[k]);r.style.setProperty('--color-accent',m[k]);r.style.setProperty('--color-ring',m[k]);r.style.setProperty('--color-sidebar-active',m[k]);}}catch(e){}})();`,
+            __html: `(function(){try{var k=localStorage.getItem('isg-color-theme');var m={amber:'oklch(70% 0.15 65)',emerald:'oklch(58% 0.17 152)'};if(k&&m[k]){var r=document.documentElement;r.style.setProperty('--color-primary',m[k]);r.style.setProperty('--color-accent',m[k]);r.style.setProperty('--color-ring',m[k]);r.style.setProperty('--color-sidebar-active',m[k]);}}catch(e){}}());if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){});});}`
           }}
         />
       </head>
       <body className="min-h-full bg-background text-foreground antialiased font-sans">
-        <SWRegister />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <ColorThemeProvider>
             <LanguageProvider>{children}</LanguageProvider>

@@ -46,6 +46,23 @@
       "purpose": "any"
     }
   ],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "screenshots": [
+    {
+      "src": "/api/screenshot",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Inventory Stock Guard — Dashboard"
+    },
+    {
+      "src": "/api/icons/512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Inventory Stock Guard"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Dashboard",

@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ size: string }> },
@@ -65,6 +63,13 @@ export async function GET(
         </div>
       </div>
     ),
-    { width: dim, height: dim },
+    {
+      width: dim,
+      height: dim,
+      headers: {
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
+    },
   );
 }
